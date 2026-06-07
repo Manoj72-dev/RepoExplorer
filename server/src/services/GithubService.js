@@ -1,6 +1,7 @@
 const axios = require('axios')
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+if (!GITHUB_TOKEN) console.warn('⚠️  GITHUB_TOKEN not set — unauthenticated rate limits apply');
 
 const github =axios.create({
     baseURL: 'https://api.github.com',
@@ -35,7 +36,24 @@ async function getRepos(username, page = 1){
         }
     })
 
-    return response
+     return response.data.map(repo => ({
+        id: repo.id,
+        name: repo.name,
+        description: repo.description,
+        html_url: repo.html_url,
+
+        language: repo.language,
+
+        stargazers_count: repo.stargazers_count,
+        forks_count: repo.forks_count,
+        open_issues_count: repo.open_issues_count,
+
+        updated_at: repo.updated_at,
+
+        homepage: repo.homepage,
+        topics: repo.topics,
+        visibility: repo.visibility
+    }));
 }
 
 module.exports = { getUser, getRepos }
