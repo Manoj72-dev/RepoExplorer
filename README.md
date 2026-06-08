@@ -6,9 +6,7 @@ A full-stack GitHub repository explorer that allows users to search GitHub profi
 
 # Live Demo
 
-**Frontend:** https://your-vercel-app.vercel.app
-
-**Backend API:** https://your-render-service.onrender.com
+https://repo-explorer-sepia.vercel.app
 
 ---
 
