@@ -8,6 +8,7 @@ import api from "../services/githubApi"
 import ProfileCard from "../components/ProfileCard"
 import RepoCard from "../components/RepoCard"
 import LanguageCard from "../components/LanguageCard";
+import PageTransition from "../components/PageTransition";
 import "../index.css"
 function Profile() {
     const { username } = useParams()
@@ -96,6 +97,7 @@ function Profile() {
         : repos 
 
     return (
+        <PageTransition>
         <div className="bg-zinc-950 min-h-screen overflow-hidden">
             <div className="flex justify-between text-white p-2">
                 <div className='flex items-center gap-5'>
@@ -174,6 +176,7 @@ function Profile() {
 }
             </div>
         </div>
+        </PageTransition>
     )
 }
 

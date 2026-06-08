@@ -2,11 +2,12 @@ import { useGithubSearch } from "../hooks/useGithubSearch"
 import { FaGithub } from "react-icons/fa"
 import HeroSection from "../components/HeroSection"
 import SearchBar from "../components/SearchBar"
-
+import PageTransition from "../components/PageTransition"
 function Home() {
   const { handleSearch, loading, error, recentSearches } = useGithubSearch()
   
   return(
+    <PageTransition>
   <div className='flex flex-col bg-zinc-950 min-h-screen'>
       <div className='flex justify-between items-center p-4 text-white' >
         <div className='flex items-center gap-5'  > 
@@ -34,7 +35,7 @@ function Home() {
       </div>
     
   </div>
-    
+    </PageTransition>
   )
 }
 
