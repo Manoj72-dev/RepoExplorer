@@ -1,7 +1,11 @@
 const axios = require('axios')
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
-
+const SORT_MAP = {
+    'updated'   : 'updated',
+    'stars'     : 'updated',   
+    'name'      : 'full_name',  
+}
 if (!GITHUB_TOKEN) console.warn('⚠️  GITHUB_TOKEN not set — unauthenticated rate limits apply');
 
 const github =axios.create({
@@ -28,12 +32,14 @@ async function getUser(username){
     hireable:     response.data.hireable,
   }
 }
-async function getRepos(username, page = 1, sort){
+async function getRepos(username, page = 1, sort = 'updated'){
+        const githubSort = SORT_MAP[sort] || 'updated'
+
     const response = await github.get(`/users/${username}/repos`,{
         params:{
             per_page: 30,
             page,
-            sort,
+           sort: githubSort,
         }
     })
 
@@ -56,14 +62,14 @@ async function getRepos(username, page = 1, sort){
         visibility: repo.visibility
     }));
 
-    const languages = page === 1 ?repos.reduce((acc, repo)=>{
+    const languages = (page === 1 || page === "1") ?repos.reduce((acc, repo)=>{
                                     if(repo.language){
                                         acc[repo.language] = (acc[repo.language] || 0)+1
                                     }
                                     return acc
                                  }, {})
                                 : null
-
+    console.log(typeof page)
     return {repos , languages}
 }
 

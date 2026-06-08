@@ -8,3 +8,13 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+body {
+    overflow-y: scroll;        /* keep scroll working */
+    scrollbar-width: none;     /* firefox */
+    -ms-overflow-style: none;  /* IE */
+}
+
+body::-webkit-scrollbar {
+    display: none;             /* chrome, safari */
+}

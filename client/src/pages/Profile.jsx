@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useLocation, useParams } from "react-router-dom";
 import { FaGithub, FaSearch } from "react-icons/fa"
 import { useGithubSearch } from "../hooks/useGithubSearch";
@@ -6,11 +7,11 @@ import { sortRepos } from "../utils/sortRepos"
 import api from "../services/githubApi"
 import ProfileCard from "../components/ProfileCard"
 import RepoCard from "../components/RepoCard"
-
+import LanguageCard from "../components/LanguageCard";
+import "../index.css"
 function Profile() {
     const { username } = useParams()
     const location = useLocation()
-
 
     const [user, setUser] = useState(location.state?.user || null)
     const [repos, setRepos] = useState([])
@@ -45,6 +46,8 @@ function Profile() {
                     setLanguages(reposRes.data.languages)
                     setHasMore(false)
                     setIsLocalSort(true)   
+                    console.log("languages:", languages)
+
                 } else {
                     const [reposRes, langRes] = await Promise.all([
                         api.get(`/user/${username}/repos?page=1&sort=${sort}`),
@@ -87,13 +90,20 @@ function Profile() {
     ]
 
 
-    const displayRepos = isLocalSort ? sortRepos(repos, sort) : repos
+    const displayRepos = sort === "stars"
+    ? sortRepos(repos, "stars")      
+    : isLocalSort
+        ? sortRepos(repos, sort)   
+        : repos 
 
     return (
-        <div className="bg-zinc-950 min-h-screen hide-scrollbar">
+        <div className="bg-zinc-950 min-h-screen overflow-hidden">
             <div className="flex justify-between text-white p-2">
                 <div className='flex items-center gap-5'>
-                    <FaGithub className='size-8' />
+                    <Link to="/">
+                        <FaGithub className='size-8' /> 
+                    </Link>
+                    
                     <span className='text-xl font-bold'>Github Explorer</span>
                 </div>
                 <div className='flex justify-center p-2 text-zinc-400'>
@@ -102,17 +112,19 @@ function Profile() {
                     </button>
                 </div>
             </div>
-
+            <hr className="text-zinc-700"/>
             {profileError && (
                 <div className="text-red-500 text-center mt-4">{profileError}</div>
             )}
 
             <div className="grid grid-cols-1 min-[1000px]:grid-cols-[35%_65%] gap-3 p-3">
-                <div>
+                {/* Left side */}
+                <div className="min-[1000px]:sticky min-[1000px]:top-3 min-[1000px]:self-start gap-3">
                     {user && <ProfileCard user={user} />}
+                    {languages && <LanguageCard languages={languages}/>}
                 </div>
 
-                <div className="p-1">
+                <div className="p-2">
                     <div className="bg-zinc-950 p-1">
                         <div className="flex justify-between max-[540px]:flex-col">
                             <h2 className="flex items-center p-3 text-2xl font-bold text-white">
@@ -135,7 +147,7 @@ function Profile() {
                             </div>
                         </div>
 
-                        <div className="p-1 hide-scrollbar">
+                        <div className="min-[1000px]:overflow-y-auto min-[1000px]:max-h-screen hide-scrollbar">
                             <div className="flex flex-col gap-4">
                                 {profileLoading ? (
                                     <div className="text-zinc-400">Loading repositories...</div>
