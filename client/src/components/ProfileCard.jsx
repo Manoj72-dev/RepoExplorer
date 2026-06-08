@@ -27,7 +27,7 @@ function ProfileCard({user}){
 
                                 {user.hireable && (
                                     <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-green-900/30 border border-green-600 px-3 py-1">
-                                        <BiBriefcase size={14}/>
+                                        <Briefcase size={14}/>
                                         <span className="text-green-400 text-sm">
                                             Available for hire
                                         </span>

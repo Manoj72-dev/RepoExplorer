@@ -8,7 +8,7 @@ export function sortRepos(repos, sortBy){
                     new Date(a.updated_at)
             );
         
-        case "star":
+        case "stars":
             return sorted.sort(
                 (a,b) => 
                     b.stargazers_count - 

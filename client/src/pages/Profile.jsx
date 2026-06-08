@@ -1,123 +1,168 @@
-import {useEffect, useState } from "react";
-import { FaGithub, FaSearch} from "react-icons/fa"
-import {useLocation} from "react-router-dom";
-import { BiBriefcase } from "react-icons/bi";
-import {sortRepos} from "../utils/sortRepos"
-
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { FaGithub, FaSearch } from "react-icons/fa"
+import { useGithubSearch } from "../hooks/useGithubSearch";
+import { sortRepos } from "../utils/sortRepos"
 import api from "../services/githubApi"
-import RepoCard from "../components/RepoCard";
-import ProfileCard from "../components/ProfileCard";
-import SearchBar from "../components/searchBar";
-import Loading from "../components/Loading";
-import "../index.css"
+import ProfileCard from "../components/ProfileCard"
+import RepoCard from "../components/RepoCard"
 
-function Profile(){
-    const location = useLocation();
-    const [user, setUser] = useState(location.state);
-    const [repos, setRepos] = useState([]);
-    const [loading, setLoading] = useState(true)
-    const [sortBy, setSortBy] = useState("updated")
+function Profile() {
+    const { username } = useParams()
+    const location = useLocation()
 
-    useEffect(()=>{
-        const fetchRepos = async () => {
+
+    const [user, setUser] = useState(location.state?.user || null)
+    const [repos, setRepos] = useState([])
+    const [languages, setLanguages] = useState(null)
+    const [sort, setSort] = useState("updated")
+    const [isLocalSort, setIsLocalSort] = useState(false)
+    const [page, setPage] = useState(1)
+    const [hasMore, setHasMore] = useState(false)
+    const [loadingMore, setLoadingMore] = useState(false)
+    const [profileLoading, setProfileLoading] = useState(true)
+    const [profileError, setProfileError] = useState(null)   // ← fixed setter name
+
+    const { handleSearch, loading: searchLoading, error: searchError, recentSearches } = useGithubSearch()
+
+    useEffect(() => {
+        if (isLocalSort) return   
+        const fetchAll = async () => {
             try {
-                const response = await api.get(
-                    `/user/${user.login}/repos`
-                );
-                console.log("Repois called")
-                console.log(response.data);
-                setRepos(response.data);
-                
-            } catch (error) {
-                console.error(error);
-            } finally{
-                setLoading(false);
-            }
-        };
+                setProfileLoading(true)
+                setPage(1)
 
-        fetchRepos();
-    },[])
-    if(loading){
-        return(
-            <div className="text-white p-8">
-                Loading repositories...
-            </div>
-        )
+                let userData = user
+                if (!user) {
+                    const userRes = await api.get(`/user/${username}`)
+                    userData = userRes.data
+                    setUser(userData)
+                }
+
+                if (userData.public_repos <= 30) {
+                    const reposRes = await api.get(`/user/${username}/repos?page=1&sort=${sort}`)
+                    setRepos(reposRes.data.repos)
+                    setLanguages(reposRes.data.languages)
+                    setHasMore(false)
+                    setIsLocalSort(true)   
+                } else {
+                    const [reposRes, langRes] = await Promise.all([
+                        api.get(`/user/${username}/repos?page=1&sort=${sort}`),
+                        api.get(`/user/${username}/languages`)
+                    ])
+                    setRepos(reposRes.data.repos)
+                    setLanguages(langRes.data)
+                    setHasMore(reposRes.data.repos.length === 30)
+                    setIsLocalSort(false)  // ← backend handles sort
+                }
+
+            } catch (err) {
+                setProfileError("Something went wrong")
+            } finally {
+                setProfileLoading(false)
+            }
+        }
+        fetchAll()
+    }, [username, sort])
+
+    const handleLoadMore = async () => {
+        try {
+            setLoadingMore(true)
+            const nextPage = page + 1
+            const reposRes = await api.get(`/user/${username}/repos?page=${nextPage}&sort=${sort}`)
+            setRepos(prev => [...prev, ...reposRes.data.repos])
+            setPage(nextPage)
+            setHasMore(reposRes.data.repos.length === 30)
+        } catch (err) {
+            setProfileError("Something went wrong")
+        } finally {
+            setLoadingMore(false)
+        }
     }
-    const sortedRepos = sortRepos(repos, sortBy);
+
+    const sortButtons = [
+        { label: "Updated", value: "updated" },
+        { label: "Stars",   value: "stars" },
+        { label: "Name",    value: "name" },
+    ]
+
+
+    const displayRepos = isLocalSort ? sortRepos(repos, sort) : repos
+
     return (
         <div className="bg-zinc-950 min-h-screen hide-scrollbar">
             <div className="flex justify-between text-white p-2">
-                <div className='flex items-center gap-5'  > 
-                    <FaGithub className='size-8'/>  
-                    <span className='text-xl font-bold'>
-                        Github Explorer
-                    </span>
+                <div className='flex items-center gap-5'>
+                    <FaGithub className='size-8' />
+                    <span className='text-xl font-bold'>Github Explorer</span>
                 </div>
                 <div className='flex justify-center p-2 text-zinc-400'>
-                    <button className=" p-2 rounded-sm hover:bg-zinc-800 hover:scale-110 transition duration-300"><FaSearch className="size-5"/></button>
+                    <button className="p-2 rounded-sm hover:bg-zinc-800 hover:scale-110 transition duration-300">
+                        <FaSearch className="size-5" />
+                    </button>
                 </div>
             </div>
-            <SearchBar/>
-            <Loading/>
-            <div className="grid grid-cols-1 min-[1000px]:grid-cols-[35%_65%] gap-3 p-3 ">
+
+            {profileError && (
+                <div className="text-red-500 text-center mt-4">{profileError}</div>
+            )}
+
+            <div className="grid grid-cols-1 min-[1000px]:grid-cols-[35%_65%] gap-3 p-3">
                 <div>
-                    {loading ? (<div>
-                        </div>): (<ProfileCard user={user}/>)}
+                    {user && <ProfileCard user={user} />}
                 </div>
-                
+
                 <div className="p-1">
-                    <div className=" bg-zinc-950 p-1 ">
-                        <div className="flex justify-between  max-[540px]:flex-col">
+                    <div className="bg-zinc-950 p-1">
+                        <div className="flex justify-between max-[540px]:flex-col">
                             <h2 className="flex items-center p-3 text-2xl font-bold text-white">
                                 Repositories ({repos.length})
                             </h2>
                             <div className="flex justify-between max-[540px]:justify-end text-zinc-400 p-3">
-                                <button className="bg-zinc-700 px-3 py-1 rounded-lg hover:scale-105 ml-3 transition duration-300">
-                                    Updated
-                                </button >
-                                <button className="bg-zinc-700 px-3 py-1 rounded-lg hover:scale-105 ml-3 transition duration-300">
-                                    Stars
-                                </button>
-                                <button className="bg-zinc-700 px-3 py-1 rounded-lg hover:scale-105 ml-3 transition duration-300">
-                                    Name
-                                </button>
+                                {sortButtons.map(btn => (
+                                    <button
+                                        key={btn.value}
+                                        onClick={() => setSort(btn.value)}
+                                        className={`px-3 py-1 rounded-lg hover:scale-105 ml-3 transition duration-300
+                                            ${sort === btn.value
+                                                ? "bg-zinc-500 text-white"
+                                                : "bg-zinc-700"
+                                            }`}
+                                    >
+                                        {btn.label}
+                                    </button>
+                                ))}
                             </div>
                         </div>
-                        
 
                         <div className="p-1 hide-scrollbar">
-
                             <div className="flex flex-col gap-4">
-                                {loading ? (
-                                    <div className="text-zinc-400">
-                                        Loading repositories...
-                                    </div>
-                                ) : repos.length === 0 ? (
-                                    <div className="text-zinc-400">
-                                        No repositories found
-                                    </div>
+                                {profileLoading ? (
+                                    <div className="text-zinc-400">Loading repositories...</div>
+                                ) : displayRepos.length === 0 ? (
+                                    <div className="text-zinc-400">No repositories found</div>
                                 ) : (
-                                    repos.map((repo) => (
-                                        <RepoCard
-                                            key={repo.id}
-                                            repo={repo}
-                                        />
+                                    displayRepos.map((repo) => (
+                                        <RepoCard key={repo.id} repo={repo} />
                                     ))
                                 )}
                             </div>
-                            
                         </div>
-                        <button className="text-zinc-700">Load more</button>
+
+                        {hasMore && (
+                            <button
+                                onClick={handleLoadMore}
+                                disabled={loadingMore}
+                                className="text-zinc-400 hover:text-white transition duration-300 p-3"
+                            >
+                                {loadingMore ? "Loading..." : "Load more"}
+                            </button>
+                        )}
                     </div>
                 </div>
-
             </div>
-            
-
         </div>
     )
 }
 
 export default Profile;
-

@@ -1,67 +1,39 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Navbar from "../components/Navbar"
-import api from "../services/githubApi"
-import HeroSection from '../components/HeroSection'
+import { useGithubSearch } from "../hooks/useGithubSearch"
+import { FaGithub } from "react-icons/fa"
+import HeroSection from "../components/HeroSection"
+import SearchBar from "../components/SearchBar"
 
 function Home() {
-
-  const [username, setUsername] = useState("")
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-  
-  const handleSearch = async() => {
-    if(!username.trim()){
-      return;
-    }
-    try{
-      const response = await api.get(`/user/${username}`);
-      console.log(response.data)
-      navigate(`/profile/${response.data.login}`,{
-        state: response.data
-      })
-    }catch(error){
-      console.error(error);
-    }
-  };
+  const { handleSearch, loading, error, recentSearches } = useGithubSearch()
   
   return(
-    <div className='flex flex-col bg-zinc-950 min-h-screen'>
-      
-      <Navbar/>
+  <div className='flex flex-col bg-zinc-950 min-h-screen'>
+      <div className='flex justify-between items-center p-4 text-white' >
+        <div className='flex items-center gap-5'  > 
+          <FaGithub className='size-8'/>  
+          <span className='text-xl font-bold'>
+            Github Explorer
+          </span>
+        </div>
+        <button className='px-3 py-1 rounded-lg font-semibold hover:bg-zinc-800 transition duration-300 hover:scale-110 active:scale-95'
+          onClick={() => window.open("https://github.com/Manoj72-dev/RepoExplorer","_blank")}
+        >
+          GitHub
+        </button>
+      </div>
       
       <hr className="border-zinc-800" />
 
       <HeroSection/>
 
-      <div className='flex justify-center p-2 gap-3 text-zinc-400'>
-      
-        <input 
-          type="text" 
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder='Enter a GitHub usename... ' 
-          className='border border-zinc-800 p-2 rounded w-full max-w-xl
-          focus:outline-none
-          focus:border-blue-500
-          focus:scale-102 transition duration-300
-          hover:scale-102 transition duration-300' 
-          required
-        />
-        <button className='bg-zinc-800 px-3 py-1 rounded-md 
-          hover:bg-zinc-800 transition duration-300 
-          hover:scale-110 
-          active:scale-95 '
-          onClick={handleSearch}
-          
-        >
-          Search
-        </button>
+      <SearchBar onSearch={handleSearch}
+                loading ={loading}
+      />
+      <div>
+       
       </div>
-      <div className='flex bg-zinc-600'>
-        
-      </div>
-    </div>
+    
+  </div>
     
   )
 }
