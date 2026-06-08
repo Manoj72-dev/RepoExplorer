@@ -1,6 +1,7 @@
 const axios = require('axios')
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+
 if (!GITHUB_TOKEN) console.warn('⚠️  GITHUB_TOKEN not set — unauthenticated rate limits apply');
 
 const github =axios.create({
@@ -27,16 +28,16 @@ async function getUser(username){
     hireable:     response.data.hireable,
   }
 }
-async function getRepos(username, page = 1){
+async function getRepos(username, page = 1, sort){
     const response = await github.get(`/users/${username}/repos`,{
         params:{
             per_page: 30,
             page,
-            sort: 'updated',
+            sort,
         }
     })
 
-     return response.data.map(repo => ({
+    const repos = response.data.map(repo => ({
         id: repo.id,
         name: repo.name,
         description: repo.description,
@@ -54,6 +55,39 @@ async function getRepos(username, page = 1){
         topics: repo.topics,
         visibility: repo.visibility
     }));
+
+    const languages = page === 1 ?repos.reduce((acc, repo)=>{
+                                    if(repo.language){
+                                        acc[repo.language] = (acc[repo.language] || 0)+1
+                                    }
+                                    return acc
+                                 }, {})
+                                : null
+
+    return {repos , languages}
 }
 
-module.exports = { getUser, getRepos }
+async function getLanguages(username){
+    let allRepos = []
+    let page = 1
+
+    while(true) {
+        const response = await github.get(`/users/${username}/repos`,{
+            params:{
+                per_page:100, page
+            }
+        })
+        allRepos = [...allRepos, ...response.data]
+        if(response.data.length < 100)
+            break;
+        page++;
+    }
+    return allRepos.reduce((acc, repo) => {
+        if(repo.language){
+            acc[repo.language] = (acc[repo.language] || 0) +1
+        }
+        return acc
+    }, {})
+}
+
+module.exports = { getUser, getRepos, getLanguages }

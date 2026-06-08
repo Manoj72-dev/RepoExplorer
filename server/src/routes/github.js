@@ -24,12 +24,28 @@ router.get(
             try{
                 const repos = await githubService.getRepos(
                     req.params.username,
-                    req.query.page || 1 
+                    req.query.page || 1,
+                    req.query.sort || 'updated' 
                 );                
                 res.sendCached(repos);
             }catch(error){
                 next(error);
             }
         })
+
+router.get(
+    '/user/:username/languages', 
+    cacheMiddleware, 
+    async(req, res, next) => {
+        try{
+            const languages = await githubService.getLanguages(
+                req.params.username
+            )
+            res.sendCached(languages)
+        } catch(error){
+            next(error);
+        }
+    }
+)
 
 module.exports = router
