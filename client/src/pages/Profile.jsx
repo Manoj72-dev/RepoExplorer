@@ -46,7 +46,6 @@ function Profile() {
                     setLanguages(reposRes.data.languages)
                     setHasMore(false)
                     setIsLocalSort(true)   
-                    console.log("languages:", languages)
 
                 } else {
                     const [reposRes, langRes] = await Promise.all([
@@ -123,7 +122,7 @@ function Profile() {
                     {user && <ProfileCard user={user} />}
                     {languages && <LanguageCard languages={languages}/>}
                 </div>
-
+                {!profileLoading &&
                 <div className="p-2">
                     <div className="bg-zinc-950 p-1">
                         <div className="flex justify-between max-[540px]:flex-col">
@@ -172,6 +171,7 @@ function Profile() {
                         )}
                     </div>
                 </div>
+}
             </div>
         </div>
     )
