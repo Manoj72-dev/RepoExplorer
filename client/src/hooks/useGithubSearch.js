@@ -10,6 +10,7 @@ export function useGithubSearch(){
     const [error, setError] = useState(null);
     const [recentSearches, setRecentSearches] = useState([])
 
+
     const saveRecent = (username) => {
         const recent = JSON.parse(localStorage.getItem("recentSearches") || "[]");
         const filtered = recent.filter(u => u !== username)
@@ -30,7 +31,7 @@ export function useGithubSearch(){
 
         }catch(err){
             if(err.response?.status === 404)
-                setError("User not found")
+                setError("404")
             else if(err.response?.status === 403)
                 setError("Rate Limit exceeded")
             else setError("Somthing went wrong")
@@ -39,7 +40,7 @@ export function useGithubSearch(){
         setLoading(false);
         }
     }
-    return {handleSearch, loading, error, recentSearches}
+    return {handleSearch, setError, loading, error, recentSearches}
 
 
 }

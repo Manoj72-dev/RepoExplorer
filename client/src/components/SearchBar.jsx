@@ -33,6 +33,7 @@ function SearchBar({onSearch, loading}){
                     hover:bg-zinc-800 transition duration-300 
                     hover:scale-110 
                     active:scale-95
+                    min-w-27
                     ${loading ? "animate-pulse cursor-not-allowed" : ""}
                 `}
             >
