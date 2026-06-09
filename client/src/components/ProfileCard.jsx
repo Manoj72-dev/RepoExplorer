@@ -9,8 +9,8 @@ import {
 function ProfileCard({user}){
     return(
         <div className="flex flex-col gap-4 p-2 ">
-                    <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700">
-                        <div className="flex gap-4">
+            <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700">
+                <div className="flex gap-4">
                             <img 
                                 src={user.avatar_url} 
                                 alt={user.login}
@@ -34,12 +34,12 @@ function ProfileCard({user}){
                                     </div>
                                 )}
                             </div>
-                        </div>
-                        <p className="mt-6 text-zinc-300 text-lg">
+                </div>
+                <p className="mt-6 text-zinc-300 text-lg">
                             {user.bio || "No bio available"}
-                        </p>
+                </p>
 
-                        <div className="mt-6 flex flex-col gap-3 text-zinc-400">
+                <div className="mt-6 flex flex-col gap-3 text-zinc-400">
                             {user.location && (
                                 <div className="flex items-center gap-3">
                                     <MapPin size={18}/>
@@ -66,10 +66,10 @@ function ProfileCard({user}){
                                 </span>
                             </div>
 
-                        </div>
+                </div>
 
-                    </div >
-                    <div className="grid grid-cols-3 bg-zinc-800 text-zinc-400 rounded-2xl p-2 ">
+            </div >
+            <div className="grid grid-cols-3 bg-zinc-800 text-zinc-400 rounded-2xl p-2 ">
                         <div className="flex flex-col p-4 items-center overflow-hidden ">
                             <span className="text-3xl font-semibold">
                                 {user.followers}
@@ -94,8 +94,8 @@ function ProfileCard({user}){
                                 Repos
                             </span>
                         </div>
-                    </div>
-                </div>
+            </div>
+        </div>
     )
 }
 export default ProfileCard;

@@ -99,19 +99,20 @@ function Profile() {
     return (
         <PageTransition>
         <div className="bg-zinc-950 min-h-screen overflow-hidden">
-            <div className="flex justify-between text-white p-2">
+            <div className="flex justify-between items-center p-4 text-white bg-zinc-800">
                 <div className='flex items-center gap-5'>
                     <Link to="/">
                         <FaGithub className='size-8' /> 
                     </Link>
                     
-                    <span className='text-xl font-bold'>Github Explorer</span>
+                    <span className='text-xl font-bold'>
+                        Github Explorer
+                    </span>
                 </div>
-                <div className='flex justify-center p-2 text-zinc-400'>
-                    <button className="p-2 rounded-sm hover:bg-zinc-800 hover:scale-110 transition duration-300">
+                    <button className="px-3 py-1 rounded-lg font-semibold hover:bg-zinc-800 transition duration-300 hover:scale-110 active:scale-95">
                         <FaSearch className="size-5" />
                     </button>
-                </div>
+            
             </div>
             <hr className="text-zinc-700"/>
             {profileError && (

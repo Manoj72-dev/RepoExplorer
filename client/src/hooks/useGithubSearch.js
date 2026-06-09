@@ -8,15 +8,13 @@ export function useGithubSearch(){
     const navigate = useNavigate() 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [recentSearches, setRecentSearches] = useState([])
 
 
-    const saveRecent = (username) => {
+    const saveRecent = (data) => {
         const recent = JSON.parse(localStorage.getItem("recentSearches") || "[]");
-        const filtered = recent.filter(u => u !== username)
-        const updated = [username, ...filtered].slice(0, MAX_RECENT)
-        localStorage.setItem("recentSeraches", JSON.stringify(updated))
-        setRecentSearches(updated)
+        const filtered = recent.filter(u => u.login !== data.login)
+        const updated = [data, ...filtered].slice(0, MAX_RECENT)
+        localStorage.setItem("recentSearches", JSON.stringify(updated))
     }
 
     const handleSearch= async (username) => {
@@ -25,8 +23,7 @@ export function useGithubSearch(){
 
         try{
             const { data } = await api.get(`/user/${username}`);
-            saveRecent(username)
-            console.log(data)
+            saveRecent(data)
             navigate(`/profile/${username}`, {state: {user: data} });
 
         }catch(err){
@@ -40,7 +37,7 @@ export function useGithubSearch(){
         setLoading(false);
         }
     }
-    return {handleSearch, setError, loading, error, recentSearches}
+    return {handleSearch, setError, loading, error}
 
 
 }
