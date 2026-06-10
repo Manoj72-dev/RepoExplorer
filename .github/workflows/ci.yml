@@ -15,7 +15,7 @@ jobs:
         working-directory: client
 
     steps:
-      - name: actions/Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Node

@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
+import {motion, AnimatePresence} from "framer-motion"
 
 function RepoCard({ repo }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,8 +57,15 @@ function RepoCard({ repo }) {
           </div>
         </div>
       </div>
-
+      <AnimatePresence>
+      
       {isOpen && (
+        <motion.div
+          initial= {{opacity: 0 , height: 0}}
+          animate={{opacity: 1, height: "auto"}}
+          exit={{opacity: 0, height: 0}}
+          transition={{duration :0.3}}
+        >
         <div className="border-t border-zinc-700 px-5 py-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
             <div className="flex flex-col">
@@ -112,14 +120,17 @@ function RepoCard({ repo }) {
                 href={repo.homepage}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-500"
+                className="px-4 py-2 bg-blue-600/50 rounded-lg hover:bg-blue-500/70"
               >
                 Live Demo
               </a>
             )}
           </div>
         </div>
+        </motion.div>
       )}
+      
+      </AnimatePresence>
     </div>
   );
 }

@@ -203,16 +203,27 @@ function Profile() {
                                             </div>
                                         </div>
                                         <div className="min-[1000px]:overflow-y-auto min-[1000px]:max-h-screen hide-scrollbar">
+                                            <AnimatePresence>
                                             {displayRepos.length === 0 ? (
                                                 <div className="text-zinc-400">No repositories found</div>
                                                 ) : (
-                                                    <div className="flex flex-col p-3 gap-3">
+                                                    <motion.div
+                                                        layout
+                                                        initial={{ opacity: 0, height: 0 }}
+                                                        animate={{ opacity: 1, height: "auto" }}
+                                                        exit={{ opacity: 0, height: 0 }}
+                                                        transition={{ duration: 0.25 }}
+                                                        className="flex flex-col p-3 gap-3"
+                                                    >
+                                                    
                                                         {displayRepos.map((repo) => (
                                                             <RepoCard key={repo.id} repo={repo} />
                                                         ))}
-                                                    </div>
+                                                
+                                                    </motion.div>
                                                 )
                                             }
+                                            </AnimatePresence>
                                         </div>
                                         {hasMore && (
                                             <button
