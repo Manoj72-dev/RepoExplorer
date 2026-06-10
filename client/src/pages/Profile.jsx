@@ -70,7 +70,7 @@ function Profile() {
             
         }
         fetchAll()
-    }, [username],sort )
+    }, [username , sort] )
 
     const handleLoadMore = async () =>{
         try{
