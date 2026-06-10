@@ -39,7 +39,7 @@ function Home() {
   return(
     <PageTransition>
       <div className='flex flex-col bg-zinc-950 min-h-screen'>
-          <div className='flex justify-between items-center p-4 text-white bg-zinc-800' >
+          <div className='flex justify-between items-center p-4 text-white bg-zinc-950' >
             <div className='flex items-center gap-5'  > 
               <FaGithub className='size-8'/>  
               <span className='text-xl font-bold'>
@@ -53,15 +53,12 @@ function Home() {
             </button>
           </div>
           
-          <hr className="border-zinc-400" />
+          <hr className="border-zinc-700" />
 
           <HeroSection/>
-
           <SearchBar onSearch={handleSearch}
                     loading ={loading}
           />
-          
-          
           <LayoutGroup>
           <motion.div layout>
 
@@ -95,7 +92,7 @@ function Home() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <div className="flex flex-col bg-zinc-800 rounded-2xl m-4 gap-4 p-6">
+                  <div className="flex flex-col bg-zinc-950 rounded-2xl m-4 gap-4 p-6">
                     <h1 className="text-zinc-400 font-bold">
                       RECENT SEARCHES
                     </h1>

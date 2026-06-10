@@ -30,6 +30,7 @@ async function getUser(username){
     location:     response.data.location,
     blog:         response.data.blog,
     hireable:     response.data.hireable,
+    created_at:   response.data.created_at
   }
 }
 async function getRepos(username, page = 1, sort = 'updated'){
@@ -59,7 +60,8 @@ async function getRepos(username, page = 1, sort = 'updated'){
 
         homepage: repo.homepage,
         topics: repo.topics,
-        visibility: repo.visibility
+        visibility: repo.visibility,
+        default_branch: repo.default_branch
     }));
 
     const languages = (page === 1 || page === "1") ?repos.reduce((acc, repo)=>{

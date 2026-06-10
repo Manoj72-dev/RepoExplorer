@@ -12,7 +12,6 @@ function RepoCard({ repo }) {
 
   return (
     <div className="bg-zinc-800 border border-zinc-700 rounded-2xl overflow-hidden">
-      {/* Header */}
       <div
         className="p-5 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
@@ -35,8 +34,7 @@ function RepoCard({ repo }) {
           )}
         </div>
 
-        {/* Stats */}
-        <div className="flex flex-wrap gap-6 mt-5 text-zinc-400 text-sm">
+        <div className="flex flex-wrap gap-6 mt-3 text-zinc-400 text-sm">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-blue-500"></span>
             <span>{repo.language || "Unknown"}</span>
@@ -59,11 +57,10 @@ function RepoCard({ repo }) {
         </div>
       </div>
 
-      {/* Expanded Section */}
       {isOpen && (
         <div className="border-t border-zinc-700 px-5 py-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
+            <div className="flex flex-col">
               <p className="text-zinc-500 text-sm">
                 Default branch
               </p>

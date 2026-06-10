@@ -14,12 +14,12 @@ function LanguageCard({ languages }) {
     const sorted = entries.sort((a, b) => b[1] - a[1])
     const max = sorted[0][1]
     return (
-        <div className="bg-zinc-800 rounded-2xl p-5 border border-zinc-700">
-            <h2 className="text-white font-medium text-base mb-4">Languages</h2>
+        <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700">
+            <h2 className="text-zinc-400 text-xl font-bold mb-4">Languages</h2>
             <div className="flex flex-col gap-3">
                 {sorted.map(([lang, count], i) => {
                     const pct = Math.round((count / total) * 100)
-                    const barW = Math.round((count / max) * 100)
+                    const barW = pct
                     const color = COLORS[i % COLORS.length]
                     return (
                         <div key={lang} className="flex items-center gap-3">

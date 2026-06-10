@@ -5,6 +5,7 @@ import {
   Briefcase,
   
 } from "lucide-react";
+import {formatNumber} from "../utils/formatNumber"
 
 function ProfileCard({user}){
     return(
@@ -17,11 +18,11 @@ function ProfileCard({user}){
                                 className="w-20 h-20 rounded-full"
                             />
                             <div>
-                                <h1 className="text-3xl font-bold text-white">
+                                <h1 className="text-3xl font-bold text-white leading-tight">
                                     {user.name || user.login}
                                 </h1>
 
-                                <p className="text-zinc-400 text-xl">
+                                <p className="text-zinc-400 text-xl leading-tight">
                                     @{user.login}
                                 </p>
 
@@ -39,15 +40,15 @@ function ProfileCard({user}){
                             {user.bio || "No bio available"}
                 </p>
 
-                <div className="mt-6 flex flex-col gap-3 text-zinc-400">
+                <div className="mt-6 flex flex-col  text-zinc-400">
                             {user.location && (
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 ">
                                     <MapPin size={18}/>
                                     <span>{user.location}</span>
                                 </div>
                             )}
                             {user.blog &&(
-                                <div className="flex item-center gap-3">
+                                <div className="flex item-center gap-3 ">
                                     <LinkIcon size={18}/>
                                     <a
                                         href={user.blog}
@@ -69,28 +70,28 @@ function ProfileCard({user}){
                 </div>
 
             </div >
-            <div className="grid grid-cols-3 bg-zinc-800 text-zinc-400 rounded-2xl p-2 ">
-                        <div className="flex flex-col p-4 items-center overflow-hidden ">
-                            <span className="text-3xl font-semibold">
-                                {user.followers}
+            <div className="grid grid-cols-3 bg-zinc-800 justify-center text-zinc-400 rounded-2xl p-2 ">
+                        <div className="flex flex-col justify-center items-center overflow-hidden ">
+                            <span className="text-3xl font-bold leading-none">
+                                {formatNumber(user.followers)}
                             </span>
-                            <span className="text-lg ">
+                            <span className="text-lg font-semibold leading-none">
                                 Followers
                             </span>
                         </div>
                         <div className="flex flex-col p-4 items-center border-l border-zinc-700">
-                            <span className="text-3xl font-semibold">
-                                {user.following}
+                            <span className="text-3xl font-bold leading-none">
+                                {formatNumber(user.following)}
                             </span>
-                            <span className="text-lg ">
+                            <span className="text-lg font-semibold leading-none">
                                 Following
                             </span>
                         </div>
                         <div className="flex flex-col p-4 items-center border-l  border-zinc-700">
-                            <span className="text-3xl font-semibold">
-                                {user.public_repos}
+                            <span className="text-3xl font-bold leading-none">
+                                {formatNumber(user.public_repos)}
                             </span>
-                            <span className="text-lg ">
+                            <span className="text-lg font-semibold leading-none">
                                 Repos
                             </span>
                         </div>
